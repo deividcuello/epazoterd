@@ -20,8 +20,8 @@ function Header() {
   })
 
   return (
-    <header className="sticky top-0 left-0 right-0 md:relative md:container mx-auto pt-5 z-50 bg-blackBodyBg">
-    <div>
+    <header className="sticky top-0 left-0 right-0 pt-5 z-50 bg-blackBodyBg">
+    <div className="md:container mx-auto">
       <div className="flex justify-between items-center">
         <Link to='/'>
           <img src="./logo.png" alt="" className="w-32" />

@@ -7,7 +7,7 @@ function Menu() {
         <h1 className="text-5xl from-[#01AA55] via-white to-[#F62E2C] bg-gradient-to-r bg-clip-text text-transparent font-dancing-script inline-block">
           Menu Epazote
         </h1>
-        <div className="[&>*]:grid [&>*]:grid-cols-1 [&>*]:sm:grid-cols-[70%_30%] [&>*]:text-center [&>*]:p-2 [&>*]:border [&>*]:rounded-full [&>*]:mt-1 [&>*]:border-customBlack mt-5 max-w-[50rem] [&>*]:bg-gradient-to-r [&>*]:from-[#01AA55] [&>*]:via-white [&>*]:to-[#F62E2C] text-customBlack font-bold">
+        <div className="[&>*]:grid [&>*]:grid-cols-1 [&>*]:sm:grid-cols-[70%_30%] [&>*]:text-center [&>*]:sm:text-start [&>*]:p-2 [&>*]:border [&>*]:rounded-full [&>*]:mt-1 [&>*]:border-customBlack mt-5 max-w-[50rem] [&>*]:bg-gradient-to-r [&>*]:from-[#01AA55] [&>*]:via-white [&>*]:to-[#F62E2C] text-customBlack font-bold">
           <div>
             <span>Empanadas</span>
             <span className="text-2xl sm:text-base sm:text-end">RD$50.00</span>
@@ -42,7 +42,7 @@ function Menu() {
         <h1 className="text-3xl from-[#01AA55] via-white to-[#F62E2C] bg-gradient-to-r bg-clip-text text-transparent font-dancing-script inline-block">
           Almuerzo
         </h1>
-        <div className="[&>*]:grid [&>*]:grid-cols-1 [&>*]:sm:grid-cols-2 [&>*]:text-center [&>*]:p-2 [&>*]:border [&>*]:rounded-full [&>*]:mt-1 [&>*]:border-customBlack mt-1 max-w-[50rem] [&>*]:bg-gradient-to-r [&>*]:from-[#01AA55] [&>*]:via-white [&>*]:to-[#F62E2C] text-customBlack font-bold">
+        <div className="[&>*]:grid [&>*]:grid-cols-1 [&>*]:sm:grid-cols-2 [&>*]:text-center [&>*]:sm:text-start [&>*]:p-2 [&>*]:border [&>*]:rounded-full [&>*]:mt-1 [&>*]:border-customBlack mt-1 max-w-[50rem] [&>*]:bg-gradient-to-r [&>*]:from-[#01AA55] [&>*]:via-white [&>*]:to-[#F62E2C] text-customBlack font-bold">
           <div>
             <span>Arroz blanco</span>
             <span className="text-2xl sm:text-base sm:text-end">RD$220.00</span>
@@ -117,7 +117,7 @@ function Menu() {
         <h1 className="text-3xl from-[#01AA55] via-white to-[#F62E2C] bg-gradient-to-r bg-clip-text text-transparent font-dancing-script inline-block">
           Postres
         </h1>
-        <div className="[&>*]:grid [&>*]:grid-cols-1 [&>*]:sm:grid-cols-2 [&>*]:text-center [&>*]:p-2 [&>*]:border [&>*]:rounded-full [&>*]:mt-1 [&>*]:border-customBlack mt-1 max-w-[50rem] [&>*]:bg-gradient-to-r [&>*]:from-[#01AA55] [&>*]:via-white [&>*]:to-[#F62E2C] text-customBlack font-bold">
+        <div className="[&>*]:grid [&>*]:grid-cols-1 [&>*]:sm:grid-cols-2 [&>*]:text-center [&>*]:sm:text-start [&>*]:p-2 [&>*]:border [&>*]:rounded-full [&>*]:mt-1 [&>*]:border-customBlack mt-1 max-w-[50rem] [&>*]:bg-gradient-to-r [&>*]:from-[#01AA55] [&>*]:via-white [&>*]:to-[#F62E2C] text-customBlack font-bold">
           <div>
             <span>Pan banana</span>
             <span className="text-2xl sm:text-base sm:text-end">RD$50.00</span>
