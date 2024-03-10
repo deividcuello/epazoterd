@@ -29,9 +29,9 @@ const Layout = ({ children }) => {
     <>
       {!location.pathname.toLowerCase().startsWith('/admin') &&
         <div>
-          {(location.pathname != '/login/' && location.pathname != '/login' && location.pathname != '/register' && location.pathname != '/recover-account') && <Header />}
+          {(location.pathname != '/login/' && location.pathname != '/login' && location.pathname != '/login' && location.pathname != '/registrar' && location.pathname != '/recover-account') && <Header />}
           {children}
-          {(location.pathname != '/login/' && location.pathname != '/login' && location.pathname != '/register' && location.pathname != '/recover-account') && <Footer />}
+          {(location.pathname != '/login/' && location.pathname != '/login' && location.pathname != '/registrar' && location.pathname != '/recover-account') && <Footer />}
         </div>
       }
 

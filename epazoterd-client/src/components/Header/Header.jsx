@@ -41,6 +41,7 @@ function Header() {
         <Link to='/'>
           <img src="./logo.png" alt="" className="w-32" />
         </Link>
+        <Link to='login' className="bg-blue-500 text-blackBodyBg px-2 py-1 font-semibold rounded-xl">Iniciar sesion</Link>
         {!isMenu ? <button onClick={() => setIsMenu(true)} className="inline-block md:hidden">
           <IoMdMenu size={'2rem'}/>
         </button> : <button onClick={() => setIsMenu(false)} className="inline-block md:hidden">
