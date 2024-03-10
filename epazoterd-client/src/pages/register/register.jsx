@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Cookies from 'js-cookie'
-import { FaChevronCircleLeft } from 'react-icons/fa'
 import { useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -51,9 +50,6 @@ function Register() {
             <div className='flex flex-col items-center'>
                 <h2 className='mb-4'>Registrate</h2>
                 <div className='bg-customBlack max-w-[35rem] rounded-2xl px-4'>
-                    <button className='container mx-auto mt-5'>
-                        <FaChevronCircleLeft size={'2rem'} />
-                    </button>
                     <form onSubmit={(e) => submitUser(e)} className='flex flex-col gap-2 max-w-[30rem] p-5 rounded-2xl'>
                         <img src="/logo.png" alt="" className=' w-36 mx-auto' />
                         <div>

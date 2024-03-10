@@ -2,11 +2,12 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
-import { FaChevronDown } from "react-icons/fa6";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { checkLogin } from "../../api";
 
 function Header() {
   const [isMenu, setIsMenu] = useState(false)
+  const [userDropDown, setUserDropDown] = useState(false)
   const [isMd, setIsMd] = useState(false)
   const [userInfo, setUserInfo] = useState('')
 
@@ -51,12 +52,12 @@ function Header() {
             <img src="./logo.png" alt="" className="w-32" />
           </Link>
           {!userInfo.username ? <Link to='login' className="bg-blue-500 text-blackBodyBg px-2 py-1 font-semibold rounded-xl">Iniciar sesion</Link> :
-            <div className="relative group">
-              <button className="flex items-center justify-center gap-2">Hola, {userInfo.username} <FaChevronDown /></button>
-              <div className="text-xs flex flex-col gap-2 w-28 scale-0 group-hover:scale-100 absolute bg-customBlack p-2 rounded-xl">
+            <div className="relative hidden md:inline-block">
+              <button onClick={() => setUserDropDown(!userDropDown)} className="flex items-center justify-center gap-2">Hola, {userInfo.username} {!userDropDown ? <FaChevronDown /> : <FaChevronUp />}</button>
+              <div className={`${!userDropDown ? 'hidden' : 'flex'} text-xs items-start flex-col gap-2 w-28 absolute bg-customBlack p-2 rounded-xl`}>
                 <button>
                   <Link to='perfil'>Editar perfil</Link>
-                  </button>
+                </button>
                 <button onClick={submitLogout}>Cerrar sesion</button>
               </div>
             </div>
@@ -120,6 +121,17 @@ function Header() {
               >
                 Contacto
               </NavLink>
+            </li>
+            <li>
+              <div className="inline-block md:hidden">
+                <button onClick={() => setUserDropDown(!userDropDown)} className="flex items-center justify-center gap-2">Hola, {userInfo.username} {!userDropDown ? <FaChevronDown /> : <FaChevronUp />}</button>
+                <div className={`${!userDropDown ? 'hidden' : 'flex'} text-sm items-start pl-3 mt-2 flex-col gap-4 w-28 p-2 rounded-xl`}>
+                  <button>
+                    <Link to='perfil'>Editar perfil</Link>
+                  </button>
+                  <button onClick={submitLogout}>Cerrar sesion</button>
+                </div>
+              </div>
             </li>
             <button className="bg-secondaryColor text-blackBodyBg font-semibold py-1 px-2 rounded-2xl mt-3 md:mt-0 ml-5 w-fit">
               Reservacion
