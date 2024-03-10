@@ -32,7 +32,7 @@ class UserLoginSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = UserModel
-		fields = ('id', 'email', 'username', 'password', 'isDelete', 'status')
+		fields = ('id', 'email', 'username', 'password', 'isDelete', 'adminAccount', 'status')
 	
 	def update(self, instance, validated_data):
 		if 'password' in validated_data:

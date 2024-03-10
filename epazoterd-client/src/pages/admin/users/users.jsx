@@ -24,7 +24,7 @@ function Users() {
 
   async function submitUser(e){
     e.preventDefault()
-    if(username && email && password && password == confirmPassword){
+    if(username && email && password.length >= 8 && password == confirmPassword){
       try {
         let formData = new FormData();
         formData.append("email", email);

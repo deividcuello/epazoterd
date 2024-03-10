@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { checkLogin } from '../../api';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
     const [email, setEmail] = useState('')
@@ -13,7 +15,6 @@ function Login() {
         async function userData(){
           try {
             const res = await checkLogin()
-            if(res.data.user.adminAccount)
             window.location.href = '/'
           } catch (error) {
             console.log(error)
@@ -22,8 +23,6 @@ function Login() {
     
         userData()
       }, [])
-
-
     function submitLogin(e) {
         e.preventDefault()
         let formData = new FormData();
@@ -33,7 +32,12 @@ function Login() {
             credentials: "include",
             method: "POST",
             body: formData,
-        }).then(() => window.location.reload(false))
+        }).then((res) => res.ok ? window.location.reload(false) : toast.error(`Hubo un error`, {
+            position: "top-center"
+          }))
+        .catch(() => toast.error(`Hubo un error`, {
+            position: "top-center"
+          }))
     }
 
     return (
@@ -57,6 +61,7 @@ function Login() {
                     <Link to='/registrar' className='text-red-500 text-sm mt-3 text-end block'>Registarse aqui</Link>
                 </div>
             </div>
+            <ToastContainer />
         </section>
     )
 }

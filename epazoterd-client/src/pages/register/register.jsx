@@ -5,45 +5,46 @@ import { useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
 function Register() {
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
 
-    async function submitUser(e){
+    async function submitUser(e) {
         e.preventDefault()
-        if(username && email && password && password == confirmPassword){
-          try {
-            let formData = new FormData();
-            formData.append("email", email);
-            formData.append("username", username);
-            formData.append("password", password);
-            formData.append("isDelete", true);
-            formData.append("adminAccount", true);
-            formData.append("status", 'INTERNAL');
-        
-            let newUser = fetch('http://localhost:8000/api/auth/register', {
-              credentials: "include",
-              headers: { "X-CSRFToken": Cookies.get("csrftoken") },
-              method: "POST",
-              body: formData,
-            }).then(res => res.ok ? toast.success(`Usuario ${username} creado`, {
-                position: "top-center"
-              }) : toast.error(`El usuario o correo ya existe`, {
-                position: "top-center"
-              }))
-          } catch (error) {
+        if (username && email && password.length >= 8 && password == confirmPassword) {
+            try {
+                let formData = new FormData();
+                formData.append("email", email);
+                formData.append("username", username);
+                formData.append("password", password);
+                formData.append("isDelete", true);
+                formData.append("adminAccount", false);
+                formData.append("status", 'NONE');
+
+                let newUser = fetch('http://localhost:8000/api/auth/register', {
+                    credentials: "include",
+                    headers: { "X-CSRFToken": Cookies.get("csrftoken") },
+                    method: "POST",
+                    body: formData,
+                }).then(res => res.ok ? toast.success(`Usuario ${username} creado`, {
+                    position: "top-center"
+                }) : toast.error(`El usuario o correo ya existe`, {
+                    position: "top-center"
+                }))
+            } catch (error) {
+                toast.error(`Hubo un error`, {
+                    position: "top-center"
+                })
+            }
+        } else {
             toast.error(`Hubo un error`, {
                 position: "top-center"
-              })
-          }
-        } else{
-            toast.error(`Hubo un error`, {
-                position: "top-center"
-              })
+            })
         }
-      }
+    }
 
     return (
         <section className='container mx-auto min-h-[calc(100vh-141.97px-38.73px)] pb-5 mt-5'>
