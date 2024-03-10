@@ -9,6 +9,7 @@ import Login from "./pages/login/login";
 import Register from "./pages/register/register";
 import Users from "./pages/admin/users/users";
 import Asidebar from "./components/admin/Asidebar";
+import Profile from "./pages/profile/profile";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/contacto" element={<Contact />}></Route>
             <Route path="/login" element={<Login />}></Route>
             <Route path="/registrar" element={<Register />}></Route>
+            <Route path="/perfil" element={<Profile />}></Route>
             <Route path="/admin/usuarios" element={<Users />}></Route>
           </Routes>
         </Layout>

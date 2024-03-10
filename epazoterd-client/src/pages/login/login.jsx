@@ -13,7 +13,8 @@ function Login() {
         async function userData(){
           try {
             const res = await checkLogin()
-            console.log(res.data)
+            if(res.data.user.adminAccount)
+            window.location.href = '/'
           } catch (error) {
             console.log(error)
           }
@@ -32,7 +33,7 @@ function Login() {
             credentials: "include",
             method: "POST",
             body: formData,
-        }).then(() => console.log('logged'))
+        }).then(() => window.location.reload(false))
     }
 
     return (
