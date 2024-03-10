@@ -2,10 +2,25 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
+import { checkLogin } from "../../api";
 
 function Header() {
   const [isMenu, setIsMenu] = useState(false)
   const [isMd, setIsMd] = useState(false)
+  const [user, setUser] = useState('')
+
+  useEffect(() => {
+    async function userData(){
+      try {
+        const res = await checkLogin()
+        console.log(res.data.user)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    userData()
+  }, [])
 
   const handleResize = () => {
     if (window.innerWidth < 768) {

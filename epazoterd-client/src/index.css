@@ -32,6 +32,31 @@
   }
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+table ::-webkit-scrollbar {
+  height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #141414;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #01AA55;
+  border-radius: 4rem;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 input, textarea{
   @apply focus:outline-none
 }
@@ -46,6 +71,10 @@ li:has(.active){
 
 .container{
   @apply px-2
+}
+
+td{
+  @apply p-2
 }
 
 @media screen and (max-width: 1023px) {
