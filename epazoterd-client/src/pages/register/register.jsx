@@ -4,13 +4,15 @@ import Cookies from 'js-cookie'
 import { useState, useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { checkLogin } from '../../api';
+import { checkLogin, sendEmail } from '../../api';
 
 
 function Register() {
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [code, setCode] = useState('')
+    const [activationCode, setActivationCode] = useState(999999999)
     const [confirmPassword, setConfirmPassword] = useState('')
 
     useEffect(() => {
@@ -58,7 +60,7 @@ function Register() {
 
     async function submitUser(e) {
         e.preventDefault()
-        if (username && email && password.length >= 8 && password == confirmPassword) {
+        if (username && email && password.length >= 8 && password == confirmPassword && code == activationCode) {
             try {
                 let formData = new FormData();
                 formData.append("email", email);
@@ -83,18 +85,37 @@ function Register() {
                 })
             }
         } else {
+            if(code != activationCode){
+                return toast.error(`El codigo no es valido`, {
+                    position: "top-center"
+                })
+            }
             toast.error(`Hubo un error`, {
                 position: "top-center"
             })
         }
     }
 
+    async function sendCode() {
+        const tempCode = Math.floor(1000 + Math.random() * 9000);
+        setActivationCode(tempCode);
+        const res = await sendEmail({
+          subject: `Epazote - Codigo para verificar email de registro`,
+          recipientList: email,
+          text: `Hola, su codigo para verificar el registro de su Email es ${tempCode}`,
+          code: Math.floor(1000 + Math.random() * 9000),
+        });
+        toast.success(`El codigo fue enviado`, {
+            position: "top-center"
+        })
+      }
+
     return (
         <section className='container mx-auto min-h-[calc(100vh-141.97px-38.73px)] pb-5 mt-5'>
             <div className='flex flex-col items-center'>
                 <h2 className='mb-4'>Registrate</h2>
-                <div className='bg-customBlack max-w-[35rem] rounded-2xl px-4'>
-                    <form onSubmit={(e) => submitUser(e)} className='flex flex-col gap-2 max-w-[30rem] p-5 rounded-2xl'>
+                <div className='bg-customBlack  w-[25rem] rounded-2xl px-4'>
+                    <form onSubmit={(e) => submitUser(e)} className='flex flex-col gap-2 w-full p-5 rounded-2xl'>
                         <img src="/logo.png" alt="" className=' w-36 mx-auto' />
                         <div>
                             <input type="text" onChange={(e) => setUsername(e.target.value)} name="" id="" placeholder='Usuario' className='w-full p-2 rounded-xl bg-blackBodyBg' />
@@ -103,8 +124,8 @@ function Register() {
                             <input type="email" onChange={(e) => setEmail(e.target.value)} name="" id="" placeholder='Correo' className='w-full p-2 rounded-xl bg-blackBodyBg' />
                         </div>
                         <div>
-                            <input type="text" name="" id="" placeholder='Codigo' className='w-full p-2 rounded-xl bg-blackBodyBg' />
-                            <span className='text-sm text-red-500'>Enviar codigo a:</span>
+                            <input type="text" name="" id="" placeholder='Codigo' onChange={(e) => setCode(e.target.value)} value={code} className='w-full p-2 rounded-xl bg-blackBodyBg' />
+                            <span onClick={sendCode} className='text-sm text-blue-500 break-words cursor-pointer'>Click para enviar codigo a: {email}</span>
                         </div>
                         <div>
                             <input type="password" onChange={(e) => setPassword(e.target.value)} name="" id="" placeholder='Contraseña' className='w-full p-2 rounded-xl bg-blackBodyBg' />

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { checkLogin } from '../../api'
+import { checkLogin, sendEmail } from '../../api'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from 'js-cookie';
@@ -12,6 +12,8 @@ function Profile() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [activationCode, setActivationCode] = useState(9999999)
+    const [code, setCode] = useState('')
 
     useEffect(() => {
         async function userData() {
@@ -60,13 +62,19 @@ function Profile() {
         }
       }
 
+      function updateEmailConfirm(){
+        toast.success("Su email fue actualizado exitosamente", {
+          position: "top-center",
+        })
+        setActivationCode(999999)
+      }
+
     async function updateEmail(e) {
         e.preventDefault();
-        // console.log(activationCode, codeInput)
         let formData = new FormData();
         formData.append("email", email);
         formData.append("update_email", true);
-        if (email) {
+        if (email && code == activationCode) {
           let editUser = fetch(
             `http://localhost:8000/api/auth/users/${userInfo.id}/`,
             {
@@ -78,9 +86,7 @@ function Profile() {
           )
             .then((response) =>
               email && response.ok
-                ? toast.success("Su email fue actualizado exitosamente", {
-                    position: "top-center",
-                  })
+                ? updateEmailConfirm()
                 : toast.error("El email ya existe", {
                     position: "top-center",
                   })
@@ -89,6 +95,9 @@ function Profile() {
               toast.error("Hubo un error", { position: "top-center" })
             );
         } else {
+          if(activationCode != code){
+            return toast.error("El codigo no es correcto", { position: "top-center" });
+          }
           toast.error("Hubo un error", { position: "top-center" });
         }
       }
@@ -130,9 +139,23 @@ function Profile() {
         }
       }
 
+      async function sendCode() {
+        const tempCode = Math.floor(1000 + Math.random() * 9000);
+        setActivationCode(tempCode);
+        const res = await sendEmail({
+          subject: `Epazote - Codigo para verificar email de registro`,
+          recipientList: email,
+          text: `Hola, su codigo para verificar el registro de su Email es ${tempCode}`,
+          code: Math.floor(1000 + Math.random() * 9000),
+        });
+        toast.success(`El codigo fue enviado`, {
+            position: "top-center"
+        })
+      }
+
     return (
         <section className='container mx-auto'>
-            <div>
+            <div className='max-w-[22rem]'>
                 <h2>Edita tu perfil:</h2>
                 <div className='mt-5 flex flex-col gap-6'>
                     <form onSubmit={(e) => updateUser(e)} className='[&>*]:flex [&>*]justify-start bg-customBlack w-fit p-5 rounded-2xl'>
@@ -144,8 +167,9 @@ function Profile() {
                             </div>
                         </div>
                     </form>
-                    <form onSubmit={(e) => updateEmail(e)} className='[&>*]:flex [&>*]justify-start bg-customBlack w-fit p-5 rounded-2xl'>
-                        <div className='flex flex-col gap-1'>
+                    <form onSubmit={(e) => updateEmail(e)} className='[&>*]:flex max-w-[22rem] [&>*]justify-start bg-customBlack w-fit p-5 rounded-2xl'>
+                        <div>
+                          <div className='flex flex-col gap-1 w-full'>
                             <label className='text-sm'>Email</label>
                             <div className='flex gap-2 items-end justify-start'>
                                 <div className='gap-2'>
@@ -154,12 +178,13 @@ function Profile() {
                                     </div>
                                     <label className='text-sm mt-4 inline-block'>Codigo</label>
                                     <div className='flex flex-col gap-2'>
-                                        <input type="text" name="" id=""className='bg-blackBodyBg p-2 rounded-xl' />
+                                        <input type="text" name="" id="" onChange={(e)=>setCode(e.target.value)} className='bg-blackBodyBg p-2 rounded-xl' />
                                     </div>
                                 </div>
-
                                 <input type="submit" name="" id="" value='Guardar' className='bg-mainColor px-2 py-1 rounded-2xl text-blackBodyBg font-semibold cursor-pointer' />
                             </div>
+                                <span onClick={sendCode} className='text-sm text-blue-500 break-words cursor-pointer'>Click para enviar codigo a: {email}</span>
+                          </div>
                         </div>
                     </form>
                     <form onSubmit={(e) => updatePassword(e)} className='[&>*]:flex [&>*]justify-start bg-customBlack w-fit p-5 rounded-2xl'>
