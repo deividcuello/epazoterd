@@ -35,6 +35,15 @@ function Users() {
     setActivationCode(Math.random())
     
   }
+  
+  function confirmUserEdit(){
+    console.log('hola')
+    toast.success(`Usuario actualizado`, {
+      position: "top-center"
+    })
+    setActivationCode(Math.random())
+    
+  }
 
   async function submitUser(e) {
     e.preventDefault()
@@ -79,9 +88,7 @@ function Users() {
             }
           ).then((response) =>
             (email && username && response.ok)
-              ? toast.success(`Usuario actualizado`, {
-                position: "top-center"
-              })
+              ? confirmUserEdit()
               : toast.error(`Hubo un error`, {
                 position: "top-center"
               })
