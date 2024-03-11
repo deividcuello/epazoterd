@@ -12,9 +12,10 @@ function Profile() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
-    const [activationCode, setActivationCode] = useState(9999999)
+    const [activationCode, setActivationCode] = useState(Math.random())
     const [code, setCode] = useState('')
 
+    console.log(activationCode)
     useEffect(() => {
         async function userData() {
             try {
@@ -66,7 +67,7 @@ function Profile() {
         toast.success("Su email fue actualizado exitosamente", {
           position: "top-center",
         })
-        setActivationCode(999999)
+        setActivationCode(Math.random())
       }
 
     async function updateEmail(e) {
@@ -178,7 +179,7 @@ function Profile() {
                                     </div>
                                     <label className='text-sm mt-4 inline-block'>Codigo</label>
                                     <div className='flex flex-col gap-2'>
-                                        <input type="text" name="" id="" onChange={(e)=>setCode(e.target.value)} className='bg-blackBodyBg p-2 rounded-xl' />
+                                        <input type="text" name="" id="" maxlength="4" onChange={(e)=>setCode(e.target.value)} className='bg-blackBodyBg p-2 rounded-xl' />
                                     </div>
                                 </div>
                                 <input type="submit" name="" id="" value='Guardar' className='bg-mainColor px-2 py-1 rounded-2xl text-blackBodyBg font-semibold cursor-pointer' />

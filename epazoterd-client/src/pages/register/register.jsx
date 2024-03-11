@@ -12,7 +12,7 @@ function Register() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [code, setCode] = useState('')
-    const [activationCode, setActivationCode] = useState(999999999)
+    const [activationCode, setActivationCode] = useState(Math.random())
     const [confirmPassword, setConfirmPassword] = useState('')
 
     useEffect(() => {
@@ -44,6 +44,7 @@ function Register() {
 
     function confirmSubmitUser(){
         let formData = new FormData();
+        setActivationCode(Math.random())
         formData.append("email", email);
         formData.append("password", password);
         fetch('http://localhost:8000/api/auth/login', {
@@ -124,7 +125,7 @@ function Register() {
                             <input type="email" onChange={(e) => setEmail(e.target.value)} name="" id="" placeholder='Correo' className='w-full p-2 rounded-xl bg-blackBodyBg' />
                         </div>
                         <div>
-                            <input type="text" name="" id="" placeholder='Codigo' onChange={(e) => setCode(e.target.value)} value={code} className='w-full p-2 rounded-xl bg-blackBodyBg' />
+                            <input type="text" name="" id="" placeholder='Codigo' maxlength="4" onChange={(e) => setCode(e.target.value)} value={code} className='w-full p-2 rounded-xl bg-blackBodyBg' />
                             <span onClick={sendCode} className='text-sm text-blue-500 break-words cursor-pointer'>Click para enviar codigo a: {email}</span>
                         </div>
                         <div>

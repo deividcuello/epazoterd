@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { getUsers, deleteUser, getUser } from '../../../api'
+import { getUsers, deleteUser, getUser, sendEmail } from '../../../api'
 import { FaChevronCircleLeft } from "react-icons/fa";
 import Cookies from 'js-cookie';
 import { ToastContainer, toast } from 'react-toastify';
@@ -14,6 +14,8 @@ function Users() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [action, setAction] = useState({ create: true, edit: false })
+  const [code, setCode] = useState('')
+  const [ActivationCode, setActivationCode] = useState(Math.random())
 
   useEffect(() => {
     async function getUsersList() {
@@ -25,9 +27,17 @@ function Users() {
     getUsersList()
   }, [])
 
+  function confirmUser(){
+    toast.success(`Usuario creado`, {
+      position: "top-center"
+    })
+    setActivationCode(Math.random())
+    
+  }
+
   async function submitUser(e) {
     e.preventDefault()
-    if ((username && email && password.length >= 8 && password == confirmPassword) || (username && email && (password.length >= 8 || password.length == 0) && password == confirmPassword && action.edit)) {
+    if ((username && email && password.length >= 8 && password == confirmPassword && code == ActivationCode) || (username && email && (password.length >= 8 || password.length == 0) && password == confirmPassword && action.edit)) {
       try {
         let formData = new FormData();
         formData.append("email", email);
@@ -42,7 +52,11 @@ function Users() {
             headers: { "X-CSRFToken": Cookies.get("csrftoken") },
             method: "POST",
             body: formData,
-          })
+          }).then(
+            response.ok ? confirmUser() : toast.error(`Hubo un error`, {
+              position: "top-center"
+            })
+          )
         } else if (action.edit) {
           formData.append("isDelete", action.isDelete);
           formData.append("adminAccount", action.adminAccount);
@@ -73,6 +87,11 @@ function Users() {
         console.log(error)
       }
     } else {
+      if(ActivationCode != code){
+        return toast.error(`Codigo erroneo`, {
+          position: "top-center"
+        })
+      }
       toast.error(`Hubo un error`, {
         position: "top-center"
       })
@@ -82,14 +101,11 @@ function Users() {
   async function editUser(id) {
     const res = await getUser(id)
     const data = res.data
-    console.log(data)
     setIsUserModal(true)
     setUsername(data.username)
     setEmail(data.email)
     setAction({ create: false, edit: true, id: id, status: data.status, isDelete: data.isDelete, adminAccount: data.adminAccount })
   }
-
-  console.log('accc', action)
 
   function setIsUserModalFunc() {
     if (!action.create) {
@@ -98,6 +114,20 @@ function Users() {
       setEmail('')
     }
     setIsUserModal(!isUserModal)
+  }
+
+  async function sendCode() {
+    const tempCode = Math.floor(1000 + Math.random() * 9000);
+    setActivationCode(tempCode);
+    const res = await sendEmail({
+      subject: `Epazote - Codigo para verificar email de registro`,
+      recipientList: email,
+      text: `Hola, su codigo para verificar el registro de su Email es ${tempCode}`,
+      code: Math.floor(1000 + Math.random() * 9000),
+    });
+    toast.success(`El codigo fue enviado`, {
+        position: "top-center"
+    })
   }
 
   return (
@@ -160,8 +190,8 @@ function Users() {
             <input type="email" onChange={(e) => setEmail(e.target.value)} value={email} name="" id="" placeholder='Correo' className='w-full p-2 rounded-xl bg-blackBodyBg' />
           </div>
           <div>
-            <input type="text" name="" id="" placeholder='Codigo' className='w-full p-2 rounded-xl bg-blackBodyBg' />
-            <span className='text-sm'>Enviar codigo a:</span>
+            <input type="text" name="" id="" placeholder='Codigo' maxlength="4" onChange={(e) => setCode(e.target.value)} value={code} className='w-full p-2 rounded-xl bg-blackBodyBg' />
+            <span onClick={sendCode} className='text-sm text-blue-500 break-words cursor-pointer'>Click para enviar codigo a: {email}</span>
           </div>
           <div>
             <input type="password" onChange={(e) => setPassword(e.target.value)} value={password} name="" id="" placeholder='Contraseña' className='w-full p-2 rounded-xl bg-blackBodyBg' />
