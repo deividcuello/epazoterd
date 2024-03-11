@@ -28,6 +28,7 @@ function Users() {
   }, [])
 
   function confirmUser(){
+    console.log('hola')
     toast.success(`Usuario creado`, {
       position: "top-center"
     })
@@ -52,7 +53,7 @@ function Users() {
             headers: { "X-CSRFToken": Cookies.get("csrftoken") },
             method: "POST",
             body: formData,
-          }).then(
+          }).then(response =>
             response.ok ? confirmUser() : toast.error(`Hubo un error`, {
               position: "top-center"
             })
@@ -61,6 +62,13 @@ function Users() {
           formData.append("isDelete", action.isDelete);
           formData.append("adminAccount", action.adminAccount);
           formData.append("status", action.status);
+          if(action.tempEmail != email){
+            if(code != ActivationCode){
+              return toast.error(`El codigo es incorrecto`, {
+                position: "top-center"
+              })
+            }
+          }
           let editUser = fetch(
             `http://localhost:8000/api/auth/users/${action.id}/`,
             {
@@ -104,7 +112,7 @@ function Users() {
     setIsUserModal(true)
     setUsername(data.username)
     setEmail(data.email)
-    setAction({ create: false, edit: true, id: id, status: data.status, isDelete: data.isDelete, adminAccount: data.adminAccount })
+    setAction({ create: false, edit: true, id: id, status: data.status, isDelete: data.isDelete, adminAccount: data.adminAccount, tempEmail: data.email })
   }
 
   function setIsUserModalFunc() {

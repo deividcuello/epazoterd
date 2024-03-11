@@ -15,7 +15,6 @@ function Profile() {
     const [activationCode, setActivationCode] = useState(Math.random())
     const [code, setCode] = useState('')
 
-    console.log(activationCode)
     useEffect(() => {
         async function userData() {
             try {
