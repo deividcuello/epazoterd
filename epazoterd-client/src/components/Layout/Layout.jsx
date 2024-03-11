@@ -17,8 +17,8 @@ const Layout = ({ children }) => {
         const res = await checkLogin()
         const userData = res.data.user
         setUserInfo(userData)
-        console.log(userData)
       } catch (error) {
+        console.log(error)
       }
     }
 
@@ -27,15 +27,16 @@ const Layout = ({ children }) => {
 
   return (
     <>
-      {!location.pathname.toLowerCase().startsWith('/admin') &&
+      {((!location.pathname.toLowerCase().startsWith('/admin')) || (userInfo.adminAccount == false || userInfo.adminAccount == undefined)) &&
         <div>
-          {(location.pathname != '/login/' && location.pathname != '/login' && location.pathname != '/login' && location.pathname != '/registrar' && location.pathname != '/recover-account') && <Header />}
+          {((location.pathname != '/login/' && location.pathname != '/login' && location.pathname != '/registrar' && location.pathname != '/recover-account')) && <Header />}
           {children}
-          {(location.pathname != '/login/' && location.pathname != '/login' && location.pathname != '/registrar' && location.pathname != '/recover-account') && <Footer />}
+          {((location.pathname != '/login/' && location.pathname != '/login' && location.pathname != '/registrar' && location.pathname != '/recover-account')) && <Footer />}
         </div>
       }
+      
 
-      {location.pathname.toLowerCase().startsWith('/admin') &&
+      {(location.pathname.toLowerCase().startsWith('/admin') && userInfo.adminAccount) &&
         <div className='flex items-start justify-start'>
           {location.pathname != '/login' && <Asidebar />}
           <main className='relative flex-grow ml-4 bg-customBlack mt-5 mr-5 h-[calc(100vh-2.5rem)] overflow-y-auto rounded-xl'>

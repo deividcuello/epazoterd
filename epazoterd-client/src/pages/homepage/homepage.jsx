@@ -29,7 +29,9 @@ function Homepage() {
                             <h1 className="hero-text font-dancing-script translate-y-3 text-6xl w-3/4 from-[#01AA55] via-white to-[#F62E2C] bg-gradient-to-r bg-clip-text text-transparent">¡Descubre a nuestro héroe culinario! Un plato legendario que cautiva con su sabor único. ¡Ven y prueba la grandeza en cada bocado!</h1>
                         </div>
                         <div className='pt-10'>
+                            <Link to='/reservar'>
                             <button className='bg-secondaryColor flex items-center gap-3 py-2 px-5 text-2xl sm:text-3xl md:text-5xl -rotate-6 rounded-2xl animate-waving-hand'>Reserva ya <FaHandPointLeft /></button>
+                            </Link>
                         </div>
                     </div>
                 </div>

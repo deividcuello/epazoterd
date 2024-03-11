@@ -1,9 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Cookies from 'js-cookie'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { checkLogin } from '../../api';
 
 
 function Register() {
@@ -11,6 +12,49 @@ function Register() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+
+    useEffect(() => {
+        async function isLogged(){
+            const res = await checkLogin()
+            if(res.data.user){
+                window.location.href = '/'
+            }
+        }
+        isLogged()
+    }, [])
+
+    function submitLogin(e) {
+        e.preventDefault()
+        let formData = new FormData();
+        formData.append("email", email);
+        formData.append("password", password);
+        fetch('http://localhost:8000/api/auth/login', {
+            credentials: "include",
+            method: "POST",
+            body: formData,
+        }).then((res) => res.ok ? window.location.reload(false) : toast.error(`Hubo un error`, {
+            position: "top-center"
+          }))
+        .catch(() => toast.error(`Hubo un error`, {
+            position: "top-center"
+          }))
+    }
+
+    function confirmSubmitUser(){
+        let formData = new FormData();
+        formData.append("email", email);
+        formData.append("password", password);
+        fetch('http://localhost:8000/api/auth/login', {
+            credentials: "include",
+            method: "POST",
+            body: formData,
+        }).then((res) => res.ok ? window.location.href = '/' : toast.error(`Hubo un error`, {
+            position: "top-center"
+          }))
+        .catch(() => toast.error(`Hubo un error`, {
+            position: "top-center"
+          }))
+    }
 
     async function submitUser(e) {
         e.preventDefault()
@@ -29,11 +73,10 @@ function Register() {
                     headers: { "X-CSRFToken": Cookies.get("csrftoken") },
                     method: "POST",
                     body: formData,
-                }).then(res => res.ok ? toast.success(`Usuario ${username} creado`, {
+                }).then(res => res.ok ? confirmSubmitUser() : toast.error(`El usuario o correo ya existe`, {
                     position: "top-center"
-                }) : toast.error(`El usuario o correo ya existe`, {
-                    position: "top-center"
-                }))
+                })
+                )
             } catch (error) {
                 toast.error(`Hubo un error`, {
                     position: "top-center"

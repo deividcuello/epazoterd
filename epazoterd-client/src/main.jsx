@@ -4,8 +4,10 @@ import App from './App.jsx'
 import './index.css'
 import Cookies from 'js-cookie'
 import { getUsers } from './api.js'
+import { useLocation } from 'react-router-dom';
 
 async function checkAdmin() {
+  const location = useLocation()
   try {
     const res = await getUsers()
     if(res.data.count == 0){
@@ -23,12 +25,12 @@ async function checkAdmin() {
         method: "POST",
         body: formData,
       })
-  
     }
   } catch (error) {
-    console.log('')
+    console.log('error')
   }
 }
+
 
 checkAdmin()
 

@@ -10,8 +10,26 @@ import Register from "./pages/register/register";
 import Users from "./pages/admin/users/users";
 import Asidebar from "./components/admin/Asidebar";
 import Profile from "./pages/profile/profile";
+import { checkLogin } from "./api";
+import { useState, useEffect } from "react";
+import NotFound from "./pages/not-found/not-found";
 
 function App() {
+  const [userInfo, setUserInfo] = useState({})
+
+  useEffect(() => {
+    async function getUserData() {
+      try {
+        const res = await checkLogin()
+        setUserInfo(res.data.user)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    getUserData()
+  }, [])
+
   return (
     <>
       <BrowserRouter>
@@ -25,10 +43,12 @@ function App() {
             <Route path="/login" element={<Login />}></Route>
             <Route path="/registrar" element={<Register />}></Route>
             <Route path="/perfil" element={<Profile />}></Route>
-            <Route path="/admin/usuarios" element={<Users />}></Route>
+            {userInfo.adminAccount && <Route path="/admin/usuarios" element={<Users />}></Route>}
+            <Route path="*" element={<NotFound />}></Route>
           </Routes>
         </Layout>
       </BrowserRouter>
+
     </>
   );
 }

@@ -49,9 +49,9 @@ function Header() {
       <div className="md:container mx-auto">
         <div className="flex justify-between items-center">
           <Link to='/'>
-            <img src="./logo.png" alt="" className="w-32" />
+            <img src="/logo.png" alt="" className="w-32" />
           </Link>
-          {!userInfo.username ? <Link to='login' className="bg-blue-500 text-blackBodyBg px-2 py-1 font-semibold rounded-xl">Iniciar sesion</Link> :
+          {!userInfo.username ? <Link to='login' className="hidden md:inline-block bg-blue-500 text-blackBodyBg px-2 py-1 font-semibold rounded-xl">Iniciar sesion</Link> :
             <div className="relative hidden md:inline-block">
               <button onClick={() => setUserDropDown(!userDropDown)} className="flex items-center justify-center gap-2">Hola, {userInfo.username} {!userDropDown ? <FaChevronDown /> : <FaChevronUp />}</button>
               <div className={`${!userDropDown ? 'hidden' : 'flex'} text-xs items-start flex-col gap-2 w-28 absolute bg-customBlack p-2 rounded-xl`}>
@@ -133,9 +133,11 @@ function Header() {
                 </div>
               </div>
             </li>
-            <button className="bg-secondaryColor text-blackBodyBg font-semibold py-1 px-2 rounded-2xl mt-3 md:mt-0 ml-5 w-fit">
-              Reservacion
-            </button>
+            <Link to='/reservar'>
+              <button className="bg-secondaryColor text-blackBodyBg font-semibold py-1 px-2 rounded-2xl mt-3 md:mt-0 ml-5 w-fit">
+                Reservacion
+              </button>
+            </Link>
           </ul>
         </nav>}
       </div>

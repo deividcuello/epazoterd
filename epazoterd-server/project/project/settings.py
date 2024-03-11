@@ -48,6 +48,14 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 
 
+#Email Config
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'Info.epazote@gmail.com'
+EMAIL_HOST_PASSWORD ='gwtowzaglqfymdtw'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_TIMEOUT = 300 # in seconds
+DEFAULT_FROM_EMAIL = 'Restaurante Epazote info.epazote@gmail.com'
 
 # Application definition
 
@@ -61,6 +69,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'project',
+    'emailapi',
     'users.apps.UsersConfig',
 ]
 
