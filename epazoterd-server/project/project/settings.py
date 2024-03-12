@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'project',
+    'bookingapi',
     'emailapi',
     'users.apps.UsersConfig',
 ]

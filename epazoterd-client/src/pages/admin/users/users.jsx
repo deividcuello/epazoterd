@@ -28,7 +28,6 @@ function Users() {
   }, [])
 
   function confirmUser(){
-    console.log('hola')
     toast.success(`Usuario creado`, {
       position: "top-center"
     })
@@ -37,7 +36,6 @@ function Users() {
   }
   
   function confirmUserEdit(){
-    console.log('hola')
     toast.success(`Usuario actualizado`, {
       position: "top-center"
     })

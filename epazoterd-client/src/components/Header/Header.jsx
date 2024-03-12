@@ -55,6 +55,9 @@ function Header() {
             <div className="relative hidden md:inline-block">
               <button onClick={() => setUserDropDown(!userDropDown)} className="flex items-center justify-center gap-2">Hola, {userInfo.username} {!userDropDown ? <FaChevronDown /> : <FaChevronUp />}</button>
               <div className={`${!userDropDown ? 'hidden' : 'flex'} text-xs items-start flex-col gap-2 w-28 absolute bg-customBlack p-2 rounded-xl`}>
+              <button>
+                  <Link to='/admin/tablero'>Admin</Link>
+                </button>
                 <button>
                   <Link to='perfil'>Editar perfil</Link>
                 </button>
@@ -126,6 +129,9 @@ function Header() {
               <div className="inline-block md:hidden">
                 <button onClick={() => setUserDropDown(!userDropDown)} className="flex items-center justify-center gap-2">Hola, {userInfo.username} {!userDropDown ? <FaChevronDown /> : <FaChevronUp />}</button>
                 <div className={`${!userDropDown ? 'hidden' : 'flex'} text-sm items-start pl-3 mt-2 flex-col gap-4 w-28 p-2 rounded-xl`}>
+                <button>
+                  <Link to='/admin/tablero'>Admin</Link>
+                </button>
                   <button>
                     <Link to='perfil'>Editar perfil</Link>
                   </button>

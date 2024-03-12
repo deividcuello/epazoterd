@@ -5,9 +5,6 @@ axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.withCredentials = true;
 
-// const client = axios.create({
-//     baseURL: "http://localhost:8000"
-//   })
 
 export const checkLogin = () => {
   return axios.get("http://localhost:8000/api/auth/user");
@@ -29,10 +26,21 @@ export const deleteUser = (id) => {
     }).then(res => window.location.reload(false))
 }
 
-//EMAIL
 export const sendEmail = (url_parameters) => {
   if(url_parameters.code){
       return axios.get(`http://localhost:8000/api/email/send/?subject=${url_parameters.subject}&text=${url_parameters.text}&recipient_list=${url_parameters.recipientList}&code=${url_parameters.code}`)
   }
   return axios.get(`http://localhost:8000/api/email/send/?subject=${url_parameters.subject}&text=${url_parameters.text}&recipient_list=${url_parameters.recipientList}`)
+}
+
+export const getBooking = () => {
+  return axios.get("http://localhost:8000/api/booking");
+};
+
+export const deleteBooking = (id) => {
+  return fetch(`http://localhost:8000/api/booking/${id}/`, {
+      credentials: 'include',
+      headers: {"X-CSRFToken": Cookies.get("csrftoken")},
+      method: "DELETE",
+    })
 }

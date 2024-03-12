@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 import Cookies from 'js-cookie'
-import { getUsers } from './api.js'
+import { getUsers, getBooking, deleteBooking } from './api.js'
 import { useLocation } from 'react-router-dom';
 
 async function checkAdmin() {
   const location = useLocation()
   try {
     const res = await getUsers()
-    if(res.data.count == 0){
+    if (res.data.count == 0) {
       let formData = new FormData();
       formData.append("email", 'epazote-admin@gmail.com');
       formData.append("username", 'epazote');
@@ -18,7 +18,6 @@ async function checkAdmin() {
       formData.append("isDelete", false);
       formData.append("adminAccount", true);
       formData.append("status", 'INTERNAL');
-  
       let newUser = fetch('http://localhost:8000/api/auth/register', {
         credentials: "include",
         headers: { "X-CSRFToken": Cookies.get("csrftoken") },
@@ -30,6 +29,25 @@ async function checkAdmin() {
     console.log('error')
   }
 }
+
+async function checkBookingsDates() {
+  const res = await getBooking()
+  const todayDate = new Date().toISOString().slice(0, 10);
+  const d = new Date();
+  const hour = d.getHours();
+  // console.log('searching...')
+  res.data.booking.forEach(element => {
+    console.log(Date.parse(todayDate) < Date.parse(element.date))
+    if (element.date > todayDate) {
+      // console.log('deleting...')
+      // deleteBooking(element.id)
+    }
+  });
+}
+
+setInterval(() => {
+  checkBookingsDates()
+}, 1000)
 
 
 checkAdmin()
