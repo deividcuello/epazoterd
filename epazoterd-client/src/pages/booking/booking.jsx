@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { checkLogin, getBooking } from '../../api'
+import { checkLogin, getBooking, deleteBooking } from '../../api'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from 'js-cookie';
@@ -94,21 +94,17 @@ function Booking() {
             isSubmit = true
         }
         for (const element of filterBookings) {
-            console.log('holaa', element)
             if (
                 (Number(time) <= (element.time) && Number(time2) <= (element.time)) ||
                 (Number(time) >= (element.time2) && Number(time2) >= (element.time2))
             ) {
                 isSubmit = true
             } else {
-                console.log('time', time, element.time)
-                console.log('time2', time2, element.time2)
                 return toast.error("El local esta ocupado en este horario", { position: "top-center" })
 
             }
         }
 
-        console.log(isSubmit)
 
         if ((isUserBooking.length <= 10) && isSubmit) {
             const getCode = uniqueId()
@@ -154,9 +150,15 @@ function Booking() {
         }
     }
 
+    async function deleteBookingFunc(id) {
+        await deleteBooking(id)
+        window.location.reload(false)
+    }
+
     return (
         <section className='container mx-auto mt-5'>
             {userInfo.username ?
+            <div>
                 <div className='flex flex-col md:flex-row items-start justify-start gap-5'>
                     <div className='bg-customBlack p-5 rounded-xl max-w-[30rem]'>
                         <h2>Reservar local:</h2>
@@ -202,48 +204,56 @@ function Booking() {
                             {bookingCode && <h3>Tu codigo es de reservacion es: {bookingCode}</h3>}
                         </form>
                     </div>
-                    <div className='flex-grow bg-customBlack rounded-xl p-5'>
-                        <h2>Tus reservaciones</h2>
-                        <div className='w-full'>
-                            <table className='mt-5 w-full'>
-                                <tr>
-                                    <th>Fecha</th>
-                                    <th>Hora de llegada</th>
-                                    <th>Hora de salida</th>
-                                    <th>Codigo de la reservacion</th>
-                                    <th>Acciones</th>
-                                </tr>
-                                {bookings.map((booking, index) => (
-                                    <tr key={index}>
-                                        <td className='min-w-[7rem]'>{booking.date}</td>
-                                        <td className='min-w-[5rem] overflow-x-auto'>
-                                            <span className='p-[0.5rem]'>
-                                                {booking.time}
-                                            </span>
-                                        </td>
-
-                                        <td className='min-w-[5rem] overflow-x-auto'>
-                                            <span className='p-[0.5rem]'>
-                                                {booking.time2}
-                                            </span>
-                                        </td>
-
-                                        <td className='min-w-[10rem] overflow-x-auto'>
-                                            <span className='p-[0.5rem]'>
-                                                {booking.booking_code}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div className='flex gap-3 items-center justify-between'>
-                                                <button onClick={() => deleteUser(user.id)} className='bg-red-500 p-1 rounded-xl text-blackBodyBg font-semibold'>Eliminar</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </table>
-                        </div>
+                    <div>
+                        <h3>Puedes visualizar tus reservaciones deslizando el scrollbar hacia abajo ⬇️</h3>
                     </div>
                 </div>
+                    <div className='bg-customBlack rounded-xl p-5 mt-5 overflow-x-auto'>
+                        <h2>Tus reservaciones</h2>
+                    {bookings.length > 0 ? <table className='mt-5 w-full'>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Hora de llegada</th>
+                            <th>Hora de salida</th>
+                            <th>Codigo de la reservacion</th>
+                            <th>Informacion adicional</th>
+                            <th>Acciones</th>
+                        </tr>
+                        {bookings.map((booking, index) => (
+                            <tr key={index}>
+                                <td className='max-w-[6rem] overflow-x-auto text-nowrap'>{booking.date}</td>
+                                <td className='max-w-[5rem] overflow-x-auto text-nowrap'>
+                                    <span className='p-[0.5rem]'>
+                                        {Number(booking.time) <= 12 ? booking.time : booking.time - 12}:00 {Number(booking.time) <= 12 ? 'A.M' : 'P.M'}
+                                    </span>
+                                </td>
+
+                                <td className='max-w-[5rem] overflow-x-auto'>
+                                    <span className='p-[0.5rem] text-nowrap'>
+                                        {Number(booking.time2) <= 12 ? booking.time2 : booking.time2 - 12}:00 {Number(booking.time2) <= 12 ? 'A.M' : 'P.M'}
+                                    </span>
+                                </td>
+                                <td className='max-w-[10rem] overflow-x-auto'>
+                                    <span className='p-[0.5rem] text-nowrap'>
+                                        {booking.booking_code}
+                                    </span>
+                                </td>
+                                <td className='max-w-[10rem] overflow-x-auto'>
+                                    <span className='p-[0.5rem] text-nowrap'>
+                                        {booking.additional_info ? booking.additional_info : 'N/A'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div className='flex gap-3 items-center justify-between'>
+                                        <button onClick={() => deleteBookingFunc(booking.id)} className='bg-red-500 p-1 rounded-xl text-blackBodyBg font-semibold'>Eliminar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </table> :
+                        <h1 className='hidden md:block text-center mt-5'>No tienes reservaciones activas</h1>}
+                    </div>
+            </div>
                 :
                 <div className='bg-customBlack p-5 rounded-xl w-fit mx-auto flex items-center justify-center flex-col gap-2'>
                     <h1>Inicia sesion para reservar:</h1>

@@ -37,7 +37,7 @@
   width: 7px;
 }
 
-table ::-webkit-scrollbar {
+::-webkit-scrollbar {
   height: 5px;
 }
 

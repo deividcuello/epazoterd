@@ -46,7 +46,6 @@ function App() {
             <Route path="/perfil" element={<Profile />}></Route>
             <Route path="/reservar" element={<Booking />}></Route>
             {userInfo.adminAccount && <Route path="/admin/usuarios" element={<Users />}></Route>}
-            <Route path="*" element={<NotFound />}></Route>
             {userInfo.adminAccount && <Route path="/admin/reservaciones" element={<Booking />}></Route>}
             <Route path="*" element={<NotFound />}></Route>
           </Routes>
