@@ -14,6 +14,8 @@ import { checkLogin } from "./api";
 import { useState, useEffect } from "react";
 import NotFound from "./pages/not-found/not-found";
 import Booking from "./pages/booking/booking";
+import BookingAdmin from "./pages/admin/booking/booking";
+import Dashboard from "./pages/admin/dashboard/dashboard";
 
 function App() {
   const [userInfo, setUserInfo] = useState({})
@@ -45,8 +47,9 @@ function App() {
             <Route path="/registrar" element={<Register />}></Route>
             <Route path="/perfil" element={<Profile />}></Route>
             <Route path="/reservar" element={<Booking />}></Route>
+            {userInfo.adminAccount && <Route path="/admin/tablero" element={<Dashboard />}></Route>}
             {userInfo.adminAccount && <Route path="/admin/usuarios" element={<Users />}></Route>}
-            {userInfo.adminAccount && <Route path="/admin/reservaciones" element={<Booking />}></Route>}
+            {userInfo.adminAccount && <Route path="/admin/reservaciones" element={<BookingAdmin />}></Route>}
             <Route path="*" element={<NotFound />}></Route>
           </Routes>
         </Layout>

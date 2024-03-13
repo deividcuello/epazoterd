@@ -19,8 +19,10 @@ class BookingApiView(APIView):
         booking = Booking.objects.all().order_by('-created_at')
         # results = self.paginate_queryset(booking, request, view=self)
         serializer = BookingSerializer(booking, many=True)
+        bookingCount = booking.count()
         return Response({
-            'booking': serializer.data}, status=status.HTTP_200_OK)
+            'booking': serializer.data,
+            'count': bookingCount}, status=status.HTTP_200_OK)
 
      # 2. Create
     def post(self, request, *args, **kwargs):
@@ -48,8 +50,6 @@ class BookingApiView(APIView):
             'people_no': request.data.get('people_no'), 
             'user': request.user.id
             }
-
-        # get_user = AppUser.objects.all().filter(id=request.user.id)[0]
 
         serializer = BookingSerializer(data=data)
         if serializer.is_valid():

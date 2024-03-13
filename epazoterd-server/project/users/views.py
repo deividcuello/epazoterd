@@ -71,9 +71,7 @@ class UsersView(APIView):
             users = AppUser.filter(hidden=False).order_by('-created_at')
 
         usersCount = users.count()
-        # results = self.paginate_queryset(users, request, view=self)
-
-		# users = AppUser.objects.all().order_by('-created_at')
+ 
         serializer = UserSerializer(users, many=True)
         return Response({
             'users': serializer.data, 
