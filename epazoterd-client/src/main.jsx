@@ -5,6 +5,7 @@ import './index.css'
 import Cookies from 'js-cookie'
 import { getUsers, getBooking, deleteBooking } from './api.js'
 import { useLocation } from 'react-router-dom';
+import {convertTZ, taskDate, formatDate} from './utils/datesFunctions';
 
 async function checkAdmin() {
   const location = useLocation()
@@ -32,7 +33,11 @@ async function checkAdmin() {
 
 async function checkBookingsDates() {
   const res = await getBooking()
-  const todayDate = new Date().toISOString().slice(0, 10);
+  const dateValue = convertTZ()
+  const dateParse = Date.parse(dateValue)
+  const dateTask = (taskDate(dateParse))
+  const formattedDate = formatDate(dateTask)
+  const todayDate = formattedDate
   const d = new Date();
   const hour = d.getHours();
   // console.log('searching...')

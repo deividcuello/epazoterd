@@ -5,19 +5,21 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom';
+import { convertTZ, taskDate, formatDate } from '../../utils/datesFunctions';
 
 function Booking() {
 
     const [time, setTime] = useState(`${new Date().getHours()}`)
-    const [time2, setTime2] = useState(`${new Date().getHours()+1}`)
+    const [time2, setTime2] = useState(`${new Date().getHours() + 1}`)
     const [date, setDate] = useState('')
     const [phone, setPhone] = useState('')
     const [additionalInfo, setAdditionalInfo] = useState('')
     const [userInfo, setUserInfo] = useState({})
     const [bookingCode, setBookingCode] = useState('')
-    const [bookingData, setBookingData] = useState([])
+    const [bookings, setBookings] = useState([])
     const [peopleNo, setPeopleNo] = useState(1)
     const [hourRange, setHourRange] = useState(new Date().getHours())
+    const [todayDate, setTodayDate] = useState('')
 
     const arrayRange = (start, stop, step) =>
         Array.from(
@@ -32,6 +34,16 @@ function Booking() {
                 setUserInfo(res.data.user)
                 setHourRange(arrayRange(new Date().getHours(), 23, 1))
 
+                const dateValue = convertTZ()
+                const dateParse = Date.parse(dateValue)
+                const dateTask = (taskDate(dateParse))
+                const formattedDate = formatDate(dateTask)
+                setTodayDate(formattedDate)
+
+                const res1 = await getBooking()
+                const data = res1.data.booking
+                const filteredData = data.filter((item) => item.user == res.data.user.id)
+                setBookings(filteredData)
             } catch (error) {
                 console.log('')
             }
@@ -58,13 +70,12 @@ function Booking() {
 
     async function submitBooking(e) {
         e.preventDefault()
-        if(time == '' || time2 == ''){
-            return toast.error("Selecciona un tiempo", { position: "top-center" }) 
+        if (time == '' || time2 == '') {
+            return toast.error("Selecciona un tiempo", { position: "top-center" })
         }
         let isSubmit = false
 
         const res = await getBooking()
-        // setBookingData(res.data.booking)
 
         const filterBookings = res.data.booking.filter((item) => item.date == date)
         const isUserBooking = filterBookings.filter((item) => item.user == userInfo.id)
@@ -79,17 +90,17 @@ function Booking() {
 
         //     }
         // });
-        if(filterBookings.length == 0){
+        if (filterBookings.length == 0) {
             isSubmit = true
         }
         for (const element of filterBookings) {
             console.log('holaa', element)
-            if(
+            if (
                 (Number(time) <= (element.time) && Number(time2) <= (element.time)) ||
                 (Number(time) >= (element.time2) && Number(time2) >= (element.time2))
-            ){
+            ) {
                 isSubmit = true
-            } else{
+            } else {
                 console.log('time', time, element.time)
                 console.log('time2', time2, element.time2)
                 return toast.error("El local esta ocupado en este horario", { position: "top-center" })
@@ -145,74 +156,95 @@ function Booking() {
 
     return (
         <section className='container mx-auto mt-5'>
-            {userInfo.username ? <div className='bg-customBlack p-5 rounded-xl max-w-[30rem]'>
-                <h2>Reservar local:</h2>
-                <form onSubmit={(e) => submitBooking(e)} className='mt-4 flex flex-col gap-5 items-start justify-start [&>*]:w-full'>
-                    <div>
-                        <label htmlFor="">Numero de telefono</label>
-                        <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" onChange={(e) => setPhone(e.target.value)} value={phone} className='bg-blackBodyBg p-1 rounded-xl w-full mt-2' required />
-                        <span className='text-xs text-secondaryColor'>Formato solo numeros: XXX-XXX-XXXX</span>
+            {userInfo.username ?
+                <div className='flex flex-col md:flex-row items-start justify-start gap-5'>
+                    <div className='bg-customBlack p-5 rounded-xl max-w-[30rem]'>
+                        <h2>Reservar local:</h2>
+                        <form onSubmit={(e) => submitBooking(e)} className='mt-4 flex flex-col gap-5 items-start justify-start [&>*]:w-full'>
+                            <div>
+                                <label htmlFor="">Numero de telefono</label>
+                                <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" onChange={(e) => setPhone(e.target.value)} value={phone} className='bg-blackBodyBg p-1 rounded-xl w-full mt-2' required />
+                                <span className='text-xs text-secondaryColor'>Formato solo numeros: XXX-XXX-XXXX</span>
+                            </div>
+                            <div>
+                                <label htmlFor="">Fecha</label>
+                                <input type='date' onChange={(e) => setDate(e.target.value)} value={date} min={todayDate} className='bg-blackBodyBg p-1 rounded-xl w-full mt-2' required />
+                            </div>
+                            <div>
+                                <label htmlFor="">Hora de llegada</label>
+                                {/* <input type='time' onChange={(e) => setTime(e.target.value)} value={time} step="3600" className='bg-blackBodyBg p-1 rounded-xl w-full mt-2' required /> */}
+                                <select onChange={(e) => setTime(e.target.value)} value={time} step="3600" className='bg-blackBodyBg p-1 rounded-xl w-full mt-2 focus:outline-none' required>
+                                    <option value='' selected></option>
+                                    {arrayRange(todayDate == date ? new Date().getHours() : 0, 23, 1).map(element => (
+                                        <option value={`${element}`}>{todayDate == date ? (element - 12) : (element <= 12 ? element : element - 12)}:00 {element <= 12 ? 'A.M' : 'P.M'}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label htmlFor="">Hora de salida</label>
+                                <select onChange={(e) => setTime2(e.target.value)} value={time2} step="3600" className='bg-blackBodyBg p-1 rounded-xl w-full mt-2 focus:outline-none' required>
+                                    <option value='' selected></option>
+                                    {arrayRange(Number(time) + 1, 23, 1).map(element => (
+                                        <option value={`${element}`}>{todayDate == date ? (element - 12) : (element <= 12 ? element : element - 12)}:00 {element <= 12 ? 'A.M' : 'P.M'}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label htmlFor="">Cantidad de personas</label>
+                                <input type='number' min="1" max="50" onKeyDown={(e) => e.preventDefault()} onChange={(e) => setPeopleNo(e.target.value)} value={peopleNo} className='bg-blackBodyBg p-1 rounded-xl w-full mt-2' required />
+                            </div>
+                            <div>
+                                <label htmlFor="">Informacion adicional (opcional)</label>
+                                <textarea name="" id="" onChange={(e) => setAdditionalInfoFunc(e)} value={additionalInfo} className='bg-blackBodyBg p-1 rounded-xl resize-none w-full h-[10rem]'></textarea>
+                                <span className='text-sm text-secondaryColor font-semibold'>{additionalInfo.length}/255</span>
+                            </div>
+                            <input type="submit" value='Reservar' className='bg-mainColor text-blackBodyBg p-2 rounded-xl font-semibold cursor-pointer' />
+                            {bookingCode && <h3>Tu codigo es de reservacion es: {bookingCode}</h3>}
+                        </form>
                     </div>
-                    <div>
-                        <label htmlFor="">Fecha</label>
-                        <input type='date' onChange={(e) => setDate(e.target.value)} value={date} min={new Date().toISOString().slice(0, 10)} className='bg-blackBodyBg p-1 rounded-xl w-full mt-2' required />
+                    <div className='flex-grow bg-customBlack rounded-xl p-5'>
+                        <h2>Tus reservaciones</h2>
+                        <div className='w-full'>
+                            <table className='mt-5 w-full'>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Hora de llegada</th>
+                                    <th>Hora de salida</th>
+                                    <th>Codigo de la reservacion</th>
+                                    <th>Acciones</th>
+                                </tr>
+                                {bookings.map((booking, index) => (
+                                    <tr key={index}>
+                                        <td className='min-w-[7rem]'>{booking.date}</td>
+                                        <td className='min-w-[5rem] overflow-x-auto'>
+                                            <span className='p-[0.5rem]'>
+                                                {booking.time}
+                                            </span>
+                                        </td>
+
+                                        <td className='min-w-[5rem] overflow-x-auto'>
+                                            <span className='p-[0.5rem]'>
+                                                {booking.time2}
+                                            </span>
+                                        </td>
+
+                                        <td className='min-w-[10rem] overflow-x-auto'>
+                                            <span className='p-[0.5rem]'>
+                                                {booking.booking_code}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div className='flex gap-3 items-center justify-between'>
+                                                <button onClick={() => deleteUser(user.id)} className='bg-red-500 p-1 rounded-xl text-blackBodyBg font-semibold'>Eliminar</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </table>
+                        </div>
                     </div>
-                    <div>
-                        <label htmlFor="">Hora de llegada</label>
-                        {/* <input type='time' onChange={(e) => setTime(e.target.value)} value={time} step="3600" className='bg-blackBodyBg p-1 rounded-xl w-full mt-2' required /> */}
-                        <select onChange={(e) => setTime(e.target.value)} value={time} step="3600" className='bg-blackBodyBg p-1 rounded-xl w-full mt-2 focus:outline-none' required>
-                            <option  value='' selected></option>
-                            {hourRange.map(element => (
-                                <option value={`${element}`}>{element - 12}:00 {element <= 12 ? 'A.M' : 'P.M'}</option>
-                            ))}
-                            {/* <option value="1">01:00 A.M</option>
-                            <option value="2">02:00 A.M</option>
-                            <option value="3">03:00 A.M</option>
-                            <option value="4">04:00 A.M</option>
-                            <option value="5">05:00 A.M</option>
-                            <option value="6">06:00 A.M</option>
-                            <option value="7">07:00 A.M</option>
-                            <option value="8">08:00 A.M</option>
-                            <option value="9">09:00 A.M</option>
-                            <option value="10">10:00 A.M</option>
-                            <option value="11">11:00 A.M</option>
-                            <option value="12">12:00 P.M</option>
-                            <option value="13">01:00 P.M</option>
-                            <option value="14">02:00 P.M</option>
-                            <option value="15">03:00 P.M</option>
-                            <option value="16">04:00 P.M</option>
-                            <option value="17">05:00 P.M</option>
-                            <option value="18">06:00 P.M</option>
-                            <option value="19">07:00 P.M</option>
-                            <option value="20">08:00 P.M</option>
-                            <option value="21">09:00 P.M</option>
-                            <option value="22">10:00 P.M</option>
-                            <option value="23">11:00 P.M</option> */}
-                        </select>
-                    </div>
-                    <div>
-                        <label htmlFor="">Hora de salida</label>
-                        {/* <input type='time' onChange={(e) => setTime(e.target.value)} value={time} step="3600" className='bg-blackBodyBg p-1 rounded-xl w-full mt-2' required /> */}
-                        <select onChange={(e) => setTime2(e.target.value)} value={time2} step="3600" className='bg-blackBodyBg p-1 rounded-xl w-full mt-2 focus:outline-none' required>
-                            <option  value='' selected></option>
-                            {arrayRange(Number(time)+1,23,1).map(element => (
-                                <option value={`${element}`}>{element - 12}:00 {element <= 12 ? 'A.M' : 'P.M'}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label htmlFor="">Cantidad de personas</label>
-                        <input type='number' min="1" max="50" onKeyDown={(e) => e.preventDefault()} onChange={(e) => setPeopleNo(e.target.value)} value={peopleNo} className='bg-blackBodyBg p-1 rounded-xl w-full mt-2' required />
-                    </div>
-                    <div>
-                        <label htmlFor="">Informacion adicional (opcional)</label>
-                        <textarea name="" id="" onChange={(e) => setAdditionalInfoFunc(e)} value={additionalInfo} className='bg-blackBodyBg p-1 rounded-xl resize-none w-full h-[10rem]'></textarea>
-                        <span className='text-sm text-secondaryColor font-semibold'>{additionalInfo.length}/255</span>
-                    </div>
-                    <input type="submit" value='Reservar' className='bg-mainColor text-blackBodyBg p-2 rounded-xl font-semibold cursor-pointer' />
-                    {bookingCode && <h3>Tu codigo es de reservacion es: {bookingCode}</h3>}
-                </form>
-            </div> :
+                </div>
+                :
                 <div className='bg-customBlack p-5 rounded-xl w-fit mx-auto flex items-center justify-center flex-col gap-2'>
                     <h1>Inicia sesion para reservar:</h1>
                     <Link to='/login' className='mx-auto text-center'><button className='px-2 py-1 bg-mainColor font-semibold text-blackBodyBg rounded-xl'>Iniciar sesion</button></Link>
